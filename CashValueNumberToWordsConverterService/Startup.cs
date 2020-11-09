@@ -17,6 +17,7 @@ namespace CashValueNumberToWordsConverterService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
+            services.AddSingleton<ICashValueNumberToWordsConverter, CashValueNumberToWordsConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
