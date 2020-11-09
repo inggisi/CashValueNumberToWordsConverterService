@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "CashValueNumberToWordsConverterService";
+
+package converter;
+
+// Conversion service definition.
+service NumberToWordConverter {
+  // send a conversion request
+  rpc Convert (NumberToWordConversionRequest) returns (NumberToWordConversionReply);
+}
+
+// The request message containing the user's name.
+message NumberToWordConversionRequest {
+  double numberToConvert = 1;
+}
+
+// The response message containing the greetings.
+message NumberToWordConversionReply {
+  string convertedNumber = 1;
+  string errorMessage = 2;
+}
