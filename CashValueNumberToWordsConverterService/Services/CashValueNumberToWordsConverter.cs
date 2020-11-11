@@ -46,23 +46,43 @@ namespace CashValueNumberToWordsConverterService
 
         private string GetDollarsAsWord(string dollarBlock)
         {
-            var dollarsAsWord = "";
+            var dollarsAsWord = "dollars";
             var dollars = int.Parse(dollarBlock);
             var dollarsSplittedIntoBlocks = SplitNumberIntoBlocks(dollars, 3).Reverse();
+            var amountOfBlocks = dollarsSplittedIntoBlocks.Count();
 
             int blockCounter = 0;
             foreach (var threeDigitBlock in dollarsSplittedIntoBlocks)
             {
                 var blockAsWord = GetNumberLowerThanThousandAsWord(threeDigitBlock);
 
-                if (blockCounter == 0)
+                if (blockCounter == 0 )
                 {
-                    dollarsAsWord = $"{blockAsWord} {(blockAsWord == "one" ? "dollar" : "dollars")}";
+                    if(blockAsWord.Contains("zero") && amountOfBlocks == 1)
+                    {
+                        dollarsAsWord = $"{blockAsWord} {dollarsAsWord}";
+                    }
+                    else if (blockAsWord.Contains("zero") && amountOfBlocks > 1)
+                    {
+                        
+                    }
+                    else
+                    {
+                        dollarsAsWord = $"{blockAsWord} {(blockAsWord == "one" ? "dollar" : dollarsAsWord)}";
+                    }
+                    
                 }
 
                 if (blockCounter == 1)
                 {
-                    dollarsAsWord = $"{blockAsWord} thousand {dollarsAsWord}";
+                    if(blockAsWord.Contains("zero") && amountOfBlocks > 2)
+                    {
+
+                    }
+                    else
+                    {
+                        dollarsAsWord = $"{blockAsWord} thousand {dollarsAsWord}";
+                    }
                 }
 
                 if (blockCounter == 2)

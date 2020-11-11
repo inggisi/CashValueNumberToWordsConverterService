@@ -87,7 +87,11 @@ namespace CashValueNumberToWordsConverterServiceTests
         [TestCase(1.01, ExpectedResult = "one dollar and one cent")]
         [TestCase(1.45, ExpectedResult = "one dollar and fourty-five cents")]
         [TestCase(25.1, ExpectedResult = "twenty-five dollars and ten cents")]
+        [TestCase(1000, ExpectedResult = "one thousand dollars")]
         [TestCase(45100, ExpectedResult = "fourty-five thousand one hundred dollars")]
+        [TestCase(100_000_000, ExpectedResult = "one hundred million dollars")]
+        [TestCase(100_000_000.00, ExpectedResult = "one hundred million dollars")]
+        [TestCase(000_100_000.00, ExpectedResult = "one hundred thousand dollars")]
         [TestCase(999_999_999.99, ExpectedResult = "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine dollars and ninety-nine cents")]
         public string ConvertCashValueFromNumberToWordsInputShouldReturnAsWord(double number)
         {
