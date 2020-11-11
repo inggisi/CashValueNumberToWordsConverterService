@@ -46,53 +46,97 @@ namespace CashValueNumberToWordsConverterService
 
         private string GetDollarsAsWord(string dollarBlock)
         {
-            var dollarsAsWord = "dollars";
             var dollars = int.Parse(dollarBlock);
             var dollarsSplittedIntoBlocks = SplitNumberIntoBlocks(dollars, 3).Reverse();
-            var amountOfBlocks = dollarsSplittedIntoBlocks.Count();
+            List<string> blocksAsWords = GetBlocksConvertedToWords(dollarsSplittedIntoBlocks);
+            InsertSeparatorWordsBetweenBlocks(blocksAsWords);
+            RemoveWrongZeros(blocksAsWords);
+            AppendCurrency(blocksAsWords);
+            var dollarsAsWord = ConcatenateWords(blocksAsWords);
+            return dollarsAsWord;
+        }
 
-            int blockCounter = 0;
+
+
+        private List<string> GetBlocksConvertedToWords(IEnumerable<int> dollarsSplittedIntoBlocks)
+        {
+            var blocksAsWords = new List<string>();
             foreach (var threeDigitBlock in dollarsSplittedIntoBlocks)
             {
                 var blockAsWord = GetNumberLowerThanThousandAsWord(threeDigitBlock);
-
-                if (blockCounter == 0 )
-                {
-                    if(blockAsWord.Contains("zero") && amountOfBlocks == 1)
-                    {
-                        dollarsAsWord = $"{blockAsWord} {dollarsAsWord}";
-                    }
-                    else if (blockAsWord.Contains("zero") && amountOfBlocks > 1)
-                    {
-                        
-                    }
-                    else
-                    {
-                        dollarsAsWord = $"{blockAsWord} {(blockAsWord == "one" ? "dollar" : dollarsAsWord)}";
-                    }
-                    
-                }
-
-                if (blockCounter == 1)
-                {
-                    if(blockAsWord.Contains("zero") && amountOfBlocks > 2)
-                    {
-
-                    }
-                    else
-                    {
-                        dollarsAsWord = $"{blockAsWord} thousand {dollarsAsWord}";
-                    }
-                }
-
-                if (blockCounter == 2)
-                {
-                    dollarsAsWord = $"{blockAsWord} million {dollarsAsWord}";
-                }
-
-                blockCounter++;
+                blocksAsWords.Add(blockAsWord);
             }
-            return dollarsAsWord;
+
+            return blocksAsWords;
+        }
+
+        private void InsertSeparatorWordsBetweenBlocks(List<string> blocksAsWords)
+        {
+            var blockCounter = blocksAsWords.Count();
+
+            if (blockCounter == 2)
+            {
+                blocksAsWords.Insert(1, "thousand");
+            }
+
+            if (blockCounter == 3)
+            {
+                blocksAsWords.Insert(1, "thousand");
+                blocksAsWords.Insert(3, "million");
+            }
+        }
+
+        private void RemoveWrongZeros(List<string> blocksAsWords)
+        {
+            int zeroIndex = 0;
+
+            while (zeroIndex > -1)
+            {
+                zeroIndex = blocksAsWords.FindIndex(b => b == "zero");
+                if (zeroIndex == -1)
+                {
+                    break;
+                }
+
+                var blockCounter = blocksAsWords.Count();
+                if (zeroIndex + 2 <= blockCounter - 1)
+                {
+                    if (blocksAsWords[zeroIndex + 2] == "zero")
+                    {
+                        blocksAsWords.RemoveRange(zeroIndex, 2);
+                    }
+                    else
+                    {
+                        blocksAsWords.RemoveAt(zeroIndex);
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        private void AppendCurrency(List<string> blocksAsWords)
+        {
+            var currency = "dollars";
+            var blockCounter = blocksAsWords.Count();
+            if (blockCounter == 1 && blocksAsWords[0] == "one")
+            {
+                currency = "dollar";
+            }
+            blocksAsWords.Insert(0, currency);
+        }
+
+        private string ConcatenateWords(List<string> blocksAsWords)
+        {
+            string dollarsAsWord = "";
+            foreach (var block in blocksAsWords)
+            {
+                dollarsAsWord = $"{block} {dollarsAsWord}";
+            }
+
+            return dollarsAsWord.Trim();
         }
 
         private string GetCentsAsWord(string centBlock)
