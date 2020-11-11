@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -18,10 +20,11 @@ namespace CashValueNumberToWordsConverterService
         {
             string centsAsWord = "";
             string cashValueAsWord = "";
+            var germanCultureInfo = new CultureInfo("de-DE");
 
             LimitCheck(cashValueAsNumber);
 
-            var dollarAndCentsSplitted = cashValueAsNumber.ToString().Split(",");
+            var dollarAndCentsSplitted = cashValueAsNumber.ToString(germanCultureInfo).Split(",");
             var numberSplittedCount = dollarAndCentsSplitted.Count();
             cashValueAsWord = GetDollarsAsWord(dollarAndCentsSplitted[0]);
             if (numberSplittedCount == 2)
